@@ -1,7 +1,7 @@
 import React from 'react'
 
 function Modal(props) {
-    const {userDetails,handleOnChange} = props;
+    const {userDetails,handleOnChange,handleOnClick} = props;
     return (
         <>
         <div className="modal" id="myModal">
@@ -22,7 +22,7 @@ function Modal(props) {
                     value={userDetails.login}
                     onChange={e => handleOnChange(e,userDetails.id)}
                   />
-                  <button className="btn btn-success">Update</button>
+                  <button type="button" className="btn btn-success" onClick={e => handleOnClick(e)}>Update</button>
                 </div>
               </div>
 

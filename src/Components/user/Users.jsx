@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Modal from "../common/Modal";
-import TableHeader from "../common/TableHeader";
+import TableHeader from "../layout/TableHeader";
 import UserList from "../user/UserList";
 
 function Users() {
   const tableHeader = ["#", "User", "Login", "Node ID", "Action"];
   const [users, setUsers] = useState([]);
   const [editUserDetails,setEditUserDetails] = useState({});
+  const [login,setLogin] = useState("");
 
   useEffect(async () => {
     var response = await fetch("https://api.github.com/users", {
@@ -36,9 +37,12 @@ function Users() {
   };
 
   function handleOnChange (e,id) {
-    console.log(id);
-    console.log(e);
-    
+    setEditUserDetails({id:id, login:e.target.value});
+  }
+
+  function handleOnClick(event){
+      event.preventDefault();
+      console.log("Click event fire")
   }
 
   return (
@@ -64,6 +68,7 @@ function Users() {
       <Modal
         userDetails={editUserDetails}
         handleOnChange={handleOnChange}
+        handleOnClick = {handleOnClick}
       />
     </>
   );

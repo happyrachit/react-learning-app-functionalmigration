@@ -1,25 +1,28 @@
 import React, { useState, useEffect } from "react";
 import Modal from "../common/Modal";
 import TableHeader from "../layout/TableHeader";
+import { baseUrl } from "../shared/platform-api";
 import UserList from "../user/UserList";
 
 function Users() {
   const tableHeader = ["#", "User", "Login", "Node ID", "Action"];
   const [users, setUsers] = useState([]);
-  const [editUserDetails,setEditUserDetails] = useState({});
-  const [login,setLogin] = useState("");
+  const [editUserDetails, setEditUserDetails] = useState({});
 
-  useEffect(async () => {
-    var response = await fetch("https://api.github.com/users", {
-      method: "Get",
-    });
-    var users = await response.json();
-    console.log(users);
-
-    setUsers(users);
+  useEffect(() => {
+    async function fetchData() {
+      // You can await here
+      let response = await fetch(`${baseUrl}/users`, {
+        method: "Get",
+      });
+      var data = await response.json();
+      setUsers(data);
+    }
+    fetchData();
   }, []);
 
-  function handleDelete (user) {
+
+  function handleDelete(user) {
     //get index of selected product
     let allUsers = [...users];
     let index = allUsers.indexOf(user);
@@ -30,19 +33,25 @@ function Users() {
       //update the state of current component(parent component)
       setUsers(allUsers);
     }
-  };
-
-  function handleEdit (user) {
-    setEditUserDetails(user);
-  };
-
-  function handleOnChange (e,id) {
-    setEditUserDetails({id:id, login:e.target.value});
   }
 
-  function handleOnClick(event){
-      event.preventDefault();
-      console.log("Click event fire")
+  function handleEdit(user) {
+    setEditUserDetails(user);
+  }
+
+  function handleOnChange(e, id) {
+    setEditUserDetails({ id: id, login: e.target.value });
+  }
+
+  function handleOnClick(event) {
+    event.preventDefault();
+    const updatedData = users.map((singleUser) => {
+      if (singleUser.id === editUserDetails.id) {
+        return { ...singleUser, login: editUserDetails.login };
+      }
+      return singleUser;
+    });
+    setUsers(updatedData);
   }
 
   return (
@@ -68,14 +77,10 @@ function Users() {
       <Modal
         userDetails={editUserDetails}
         handleOnChange={handleOnChange}
-        handleOnClick = {handleOnClick}
+        handleOnClick={handleOnClick}
       />
     </>
   );
 }
-
-
-
-
 
 export default Users;
